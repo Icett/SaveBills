@@ -1,13 +1,7 @@
-﻿using System;
+﻿using APIWebBills.Models;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Configuration;
 using System.Web.Http;
-using Newtonsoft.Json;
+//using System.Web.Mvc;
 
 namespace APIWebBills.Controllers
 {
@@ -22,43 +16,22 @@ namespace APIWebBills.Controllers
         // GET api/values/5
         public string Get(int id)
         {
-            string test = "";
-            using (SqlConnection con = new SqlConnection(WebConfigurationManager.ConnectionStrings["Connection"].ConnectionString))
-            {
-                con.Open();
-                using (SqlCommand command = new SqlCommand("SELECT * FROM ACCOUNT", con))
-                {
-                    using (SqlDataReader reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            for (int i = 0; i < reader.FieldCount; i++)
-                            {
-                                test += reader.GetValue(i);
-                            }
-                        }
-                    }
-                }
-            }
-
-            var json = JsonConvert.SerializeObject(test);
-
-            return json;
+            return "value";
         }
-
 
         // POST api/values
         [HttpPost]
-        public string Post([FromBody]string value)
+        public string Post([FromBody]test values)
         {
-            return "weszlo: " + value;
+            string response = "OK: " + values;
+            return response;
         }
-        
-        // PUT api/values/5
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-        
+
+        // PUT api/values/5s
+        //public void Put(int id, [FromBody]string value)
+        //{
+        //}
+
         // DELETE api/values/5
         public void Delete(int id)
         {
