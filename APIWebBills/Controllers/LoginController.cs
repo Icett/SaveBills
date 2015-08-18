@@ -31,7 +31,7 @@ namespace APIWebBills.Controllers
         {
             //return "response " + user.userName + ", " + user.userPsswd;
             // Pobranie uzytkownika
-            string activeUser = "-1";
+            string activeUser = "";
             using (SqlConnection con = new SqlConnection(WebConfigurationManager.ConnectionStrings["Connection"].ConnectionString))
             {
                 con.Open();
