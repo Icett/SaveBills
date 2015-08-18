@@ -31,7 +31,7 @@ namespace APIWebBills.Controllers
         {
             //return "response " + user.userName + ", " + user.userPsswd;
             // Pobranie uzytkownika
-            string activeUser = "0";
+            string activeUser = "-1";
             using (SqlConnection con = new SqlConnection(WebConfigurationManager.ConnectionStrings["Connection"].ConnectionString))
             {
                 con.Open();
@@ -51,15 +51,15 @@ namespace APIWebBills.Controllers
             }
             if (activeUser == "1") // user is existing
             {
-                return "user exist";
+                return "Status: 1 Code: user exist";
             }
             else if (activeUser == "0") // account is inactive
             {
-                return "user account was deleted";
+                return "Status: 0 Code: user account was deleted";
             }
             else // user is not existing
             {
-                return "user is not existing";
+                return "Status: -1 Code: user is not existing";
             }
 
             //var json = JsonConvert.SerializeObject(test);
