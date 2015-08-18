@@ -29,26 +29,39 @@ namespace APIWebBills.Controllers
         [HttpPost]
         public string Post([FromBody]LoginClass user)
         {
-            return "response " + user.userName + ", " + user.userPsswd;
+            //return "response " + user.userName + ", " + user.userPsswd;
             // Pobranie uzytkownika
-            //string test = "";
-            //using (SqlConnection con = new SqlConnection(WebConfigurationManager.ConnectionStrings["Connection"].ConnectionString))
-            //{
-            //    con.Open();
-            //    using (SqlCommand command = new SqlCommand("SELECT * FROM ACCOUNT", con))
-            //    {
-            //        using (SqlDataReader reader = command.ExecuteReader())
-            //        {
-            //            while (reader.Read())
-            //            {
-            //                for (int i = 0; i < reader.FieldCount; i++)
-            //                {
-            //                    test += reader.GetValue(i);
-            //                }
-            //            }
-            //        }
-            //    }
-            //}
+            string activeUser = "0";
+            using (SqlConnection con = new SqlConnection(WebConfigurationManager.ConnectionStrings["Connection"].ConnectionString))
+            {
+                con.Open();
+                using (SqlCommand command = new SqlCommand("SELECT active FROM ACCOUNT WHERE nick = '" + user.userName + "' AND password = '" + user.userPsswd + "'", con))
+                {
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                activeUser += reader.GetValue(i);
+                            }
+                        }
+                    }
+                }
+            }
+            if (activeUser == "1") // user is existing
+            {
+                return "user exist";
+            }
+            else if (activeUser == "0") // account is inactive
+            {
+                return "user account was deleted";
+            }
+            else // user is not existing
+            {
+                return "user is not existing";
+            }
+
             //var json = JsonConvert.SerializeObject(test);
         }
 
