@@ -1,8 +1,8 @@
-﻿using System;
+﻿using APIWebBills.Models;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
+using System.Data;
+using System.Data.SqlClient;
+using System.Web.Configuration;
 using System.Web.Http;
 
 namespace APIWebBills.Controllers
@@ -15,25 +15,55 @@ namespace APIWebBills.Controllers
             return new string[] { "value1", "value2" };
         }
 
-        // GET api/register/5
-        public string Get(int id)
-        {
-            return "value";
-        }
-
         // POST api/register
-        public void Post([FromBody]string value)
+        [HttpPost]
+        public string Post([FromBody]LoginClass user)
         {
-        }
+            using (SqlConnection con = new SqlConnection(WebConfigurationManager.ConnectionStrings["Connection"].ConnectionString))
+            {
+                con.Open();
+                using (SqlCommand command = new SqlCommand("SELECT nick FROM ACCOUNT WHERE nick = '" + user.userName + "'", con))
+                {
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.HasRows)
+                        {
+                            return "Status: 0 Code: User exist";
+                        }
+                    }
+                }
 
-        // PUT api/register/5
-        public void Put(int id, [FromBody]string value)
-        {
-        }
+                string sqlInsert = "INSERT INTO Account (nick, password, mail, country, active, premium)" +
+                                                        "values (@nick, @psswd, @mail, @country, '1', '0')";
+                SqlCommand cmd = new SqlCommand(sqlInsert, con);
+                cmd.Parameters.Add("@nick", SqlDbType.VarChar);
+                cmd.Parameters.Add("@psswd", SqlDbType.VarChar);
+                cmd.Parameters.Add("@mail", SqlDbType.VarChar);
+                cmd.Parameters.Add("@country", SqlDbType.VarChar);
+                cmd.Parameters["@nick"].Value = user.userName;
+                cmd.Parameters["@psswd"].Value = user.userPsswd;
 
-        // DELETE api/register/5
-        public void Delete(int id)
-        {
+
+                if (user.userMail != "")
+                    cmd.Parameters["@mail"].Value = user.userMail;
+                else
+                    cmd.Parameters["@mail"].Value = "EMPTY";
+
+
+                if (user.userCountry != null)
+                    cmd.Parameters["@country"].Value = user.userCountry;
+                else
+                    cmd.Parameters["@country"].Value = "EMPTY";
+
+
+                int numberOfRecords = cmd.ExecuteNonQuery();
+
+                if (numberOfRecords == 1)
+                    return "Status: 1 Code: User was add successfuly";
+                else
+                    return "Status: -1 Code: User wasn't add to database";
+
+            }
         }
     }
 }
