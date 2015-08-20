@@ -24,7 +24,15 @@ namespace APIWebBills.Controllers
             using (SqlConnection con = new SqlConnection(WebConfigurationManager.ConnectionStrings["Connection"].ConnectionString))
             {
                 con.Open();
-                using (SqlCommand command = new SqlCommand("SELECT active FROM ACCOUNT WHERE nick = '" + user.userName + "' OR mail = '" + user.userMail + "'", con))
+                string sqlCommand = "SELECT active FROM ACCOUNT WHERE nick = '" + user.userName + "' OR mail = '" + user.userMail + "'";
+
+                if (user.userMail != "")
+                    sqlCommand = "SELECT active FROM ACCOUNT WHERE mail = '" + user.userMail + "'";
+
+                if (user.userName != "")
+                    sqlCommand = "SELECT active FROM ACCOUNT WHERE nick = '" + user.userName + "'";
+
+                using (SqlCommand command = new SqlCommand(sqlCommand, con))
                 {
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
