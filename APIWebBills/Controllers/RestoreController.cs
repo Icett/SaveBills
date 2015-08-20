@@ -42,16 +42,30 @@ namespace APIWebBills.Controllers
                               .Select(s => s[random.Next(s.Length)])
                               .ToArray());
 
-                string sqlInsert = "UPDATE Account SET password = @psswd WHERE mail = @mail OR nick = @nick";
+                string sqlInsert = "";
+
+                if (user.userMail != "")
+                    sqlInsert = "UPDATE Account SET password = @psswd WHERE mail = @mail";
+
+                if (user.userName != "")
+                    sqlInsert = "UPDATE Account SET password = @psswd WHERE nick = @nick";
+
+                
                 SqlCommand cmd = new SqlCommand(sqlInsert, con);
                 cmd.Parameters.Add("@psswd", SqlDbType.VarChar);
-                cmd.Parameters.Add("@mail", SqlDbType.VarChar);
-                cmd.Parameters.Add("@nick", SqlDbType.VarChar);
+                
                 cmd.Parameters["@psswd"].Value = result;
-                if(user.userMail != null)
+                if (user.userMail != "")
+                {
+                    cmd.Parameters.Add("@mail", SqlDbType.VarChar);
                     cmd.Parameters["@mail"].Value = user.userMail;
-                if(user.userName != null)
+                }
+                
+                if (user.userName != "")
+                {
+                    cmd.Parameters.Add("@nick", SqlDbType.VarChar);
                     cmd.Parameters["@nick"].Value = user.userName;
+                }
                 int numberOfRecords = cmd.ExecuteNonQuery();
 
                 if (numberOfRecords == 1)
