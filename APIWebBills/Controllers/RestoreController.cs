@@ -42,7 +42,7 @@ namespace APIWebBills.Controllers
                               .Select(s => s[random.Next(s.Length)])
                               .ToArray());
 
-                string sqlInsert = "UPDATE Account SET password = @psswd WHERE mail = @mail OR nick = @nisck";
+                string sqlInsert = "UPDATE Account SET password = @psswd WHERE mail = @mail OR nick = @nick";
                 SqlCommand cmd = new SqlCommand(sqlInsert, con);
                 cmd.Parameters.Add("@psswd", SqlDbType.VarChar);
                 cmd.Parameters.Add("@mail", SqlDbType.VarChar);
