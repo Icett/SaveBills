@@ -15,13 +15,6 @@ namespace APIWebBills.Controllers
             return new string[] { "value1", "value2" };
         }
 
-        // GET api/login/5
-        //public string Get(int id)
-        //{
-        //    return "value";
-        //}
-
-        // POST api/login
         [HttpPost]
         public string Post([FromBody]LoginClass user)
         {
@@ -31,7 +24,7 @@ namespace APIWebBills.Controllers
             using (SqlConnection con = new SqlConnection(WebConfigurationManager.ConnectionStrings["Connection"].ConnectionString))
             {
                 con.Open();
-                using (SqlCommand command = new SqlCommand("SELECT active FROM ACCOUNT WHERE nick = '" + user.userName + "' AND password = '" + user.userPsswd + "'", con))
+                using (SqlCommand command = new SqlCommand("SELECT active FROM ACCOUNT WHERE nick = '" + user.userName + "' AND password = '" + user.userPsswd + "'" + " AND active = 1", con))
                 {
                     using (SqlDataReader reader = command.ExecuteReader())
                     {

@@ -38,7 +38,7 @@ namespace APIWebBills.Controllers
                     {
                         if (!reader.HasRows)
                         {
-                            return "Status: -1 Code: User doesn't exist"; // Code: User exist, password was sent to an e-mail (if exist)";
+                            return "Status: -1 Code: User doesn't exist"; 
                         }
                     }
                 }
