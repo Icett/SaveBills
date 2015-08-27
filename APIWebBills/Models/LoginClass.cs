@@ -14,7 +14,7 @@ namespace APIWebBills.Models
         public string userMail { get; set; }
         public string userCountry { get; set; }
         public bool premium { get; set; }
-
+        
         #region SZYFROWANIE
         private string Crypt_The_Password(string psswd, string apiSalt)
         {

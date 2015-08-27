@@ -1,9 +1,12 @@
 ﻿using APIWebBills.Models;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
 using System.Web.Configuration;
 using System.Web.Http;
 
@@ -74,10 +77,22 @@ namespace APIWebBills.Controllers
                     cmd.Parameters.Add("@nick", SqlDbType.VarChar);
                     cmd.Parameters["@nick"].Value = user.userName;
                 }
-                int numberOfRecords = cmd.ExecuteNonQuery();
 
-                if (numberOfRecords == 1)
+                int numberOfRecords = cmd.ExecuteNonQuery();
+                
+                if (numberOfRecords == 1 && user.userMail.Length > 3)
+                {
+                    MailMessage o = new MailMessage("karolpyrek1@tlen.pl", user.userMail, "Keep guarantee: Reset your password", "Thanks for using my app! Here is your new password: " + result);
+                    NetworkCredential netCred = new NetworkCredential("karolpyrek1@tlen.pl", "qazxc284");
+                    SmtpClient smtpobj = new SmtpClient("poczta.o2.pl", 587);
+                    smtpobj.EnableSsl = true;
+                    smtpobj.Credentials = netCred;
+                    smtpobj.Send(o);
+
+                    
                     return "Status: 1 Code: password was sent to an e-mail (if exist)";
+                }
+                    
                 else
                     return "Status: 0 Code: Couldn't change the password";
             }
