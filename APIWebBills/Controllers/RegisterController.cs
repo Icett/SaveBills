@@ -1,7 +1,13 @@
 ﻿using APIWebBills.Models;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Storage.v1;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
+using System.Security.Cryptography.X509Certificates;
+using System.Web;
 using System.Web.Configuration;
 using System.Web.Http;
 
@@ -59,7 +65,9 @@ namespace APIWebBills.Controllers
                 int numberOfRecords = cmd.ExecuteNonQuery();
 
                 if (numberOfRecords == 1)
+                {
                     return "Status: 1 Code: User was add successfuly";
+                }
                 else
                     return "Status: -1 Code: User wasn't add to database";
 
