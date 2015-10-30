@@ -22,6 +22,36 @@ namespace APIWebBills.Controllers
             return new string[] { "value1", "value2" };
         }
 
+
+
+        [HttpGet]
+        public byte[] GetImage(int id)
+        {
+            byte[] k = { 0 };
+            byte[] binaryString;
+            using (SqlConnection con = new SqlConnection(WebConfigurationManager.ConnectionStrings["Connection"].ConnectionString))
+            {
+                con.Open();
+                using (SqlCommand command = new SqlCommand("SELECT ImageBytes FROM PHOTO WHERE Nick = 'KAROL'", con))
+                {
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                binaryString = (byte[])reader[0];
+                                return binaryString;
+                            }
+                        }
+                    
+                    }
+                }
+            }
+            return k;
+              
+        }
+
         // POST api/images
         [HttpPost]
         public string PostImage([FromBody]PhotoClass Image)
