@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web.Configuration;
 using System.Web.Http;
@@ -25,7 +26,7 @@ namespace APIWebBills.Controllers
 
 
         [HttpGet]
-        public byte[] GetImage(int id)
+        public string GetImage(int id)
         {
             byte[] k = { 0 };
             byte[] binaryString;
@@ -41,16 +42,21 @@ namespace APIWebBills.Controllers
                             for (int i = 0; i < reader.FieldCount; i++)
                             {
                                 binaryString = (byte[])reader[0];
-                                return binaryString;
+                                string s = Encoding.BigEndianUnicode.GetString(binaryString, 0, binaryString.Length);
+
+                                
+                                return s;
                             }
                         }
                     
                     }
                 }
             }
-            return k;
-              
+
+            return "dd";
         }
+
+
 
         // POST api/images
         [HttpPost]
