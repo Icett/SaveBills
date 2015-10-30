@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Configuration;
@@ -26,9 +27,8 @@ namespace APIWebBills.Controllers
 
 
         [HttpGet]
-        public string GetImage(int id)
+        public HttpResponseMessage ReturnBytes(int id)
         {
-            byte[] k = { 0 };
             byte[] binaryString;
             using (SqlConnection con = new SqlConnection(WebConfigurationManager.ConnectionStrings["Connection"].ConnectionString))
             {
@@ -42,18 +42,24 @@ namespace APIWebBills.Controllers
                             for (int i = 0; i < reader.FieldCount; i++)
                             {
                                 binaryString = (byte[])reader[0];
-                                string s = Encoding.BigEndianUnicode.GetString(binaryString, 0, binaryString.Length);
 
-                                
-                                return s;
+                                HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
+                                result.Content = new ByteArrayContent(binaryString);
+                                result.Content.Headers.ContentType =
+                                    new MediaTypeHeaderValue("application/octet-stream");
+
+                                return result;
                             }
                         }
-                    
+
                     }
                 }
             }
+            HttpResponseMessage resultw = new HttpResponseMessage(HttpStatusCode.OK);
 
-            return "dd";
+            return resultw;
+
+
         }
 
 
