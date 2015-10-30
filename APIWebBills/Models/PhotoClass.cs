@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace APIWebBills.Models
 {
-    class PhotoClass
+    public class PhotoClass
     {
         public int photoID { get; set; }
         public string photoName { get; set; }
@@ -14,5 +14,7 @@ namespace APIWebBills.Models
         public DateTime guarantee { get; set; }
         public string photoInfo { get; set; }
         public string userName { get; set; }
+        public byte[] ImageBytes { get; set; }
+        public DateTime AddedDate { get; set; }
     }
 }

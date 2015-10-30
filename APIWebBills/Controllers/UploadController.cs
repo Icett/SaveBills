@@ -1,11 +1,16 @@
-﻿using System;
+﻿using APIWebBills.Models;
+using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Web.Configuration;
 using System.Web.Http;
+
 
 namespace APIWebBills.Controllers
 {
@@ -17,16 +22,39 @@ namespace APIWebBills.Controllers
             return new string[] { "value1", "value2" };
         }
 
-        public async Task<HttpResponseMessage> Post()
+        // POST api/images
+        [HttpPost]
+        public string PostImage([FromBody]PhotoClass Image)
         {
-            Stream requestStream = await this.Request.Content.ReadAsStreamAsync();
-            byte[] byteArray = null;
-            using (MemoryStream ms = new MemoryStream())
+            if (Image != null)
             {
-                await requestStream.CopyToAsync(ms);
-                byteArray = ms.ToArray();
+                using (SqlConnection con = new SqlConnection(WebConfigurationManager.ConnectionStrings["Connection"].ConnectionString))
+                {
+                    con.Open();
+                   
+
+                    string sqlInsert = "INSERT INTO Photo (Nick, ImageBytes)" +
+                                                            "values (@Nick, @ImageBytes)";
+
+                    SqlCommand cmd = new SqlCommand(sqlInsert, con);
+                    cmd.Parameters.Add("@Nick", SqlDbType.VarChar);
+                    cmd.Parameters.Add("@ImageBytes", SqlDbType.VarBinary);
+                    cmd.Parameters["@Nick"].Value = Image.userName;
+                    cmd.Parameters["@ImageBytes"].Value = Image.ImageBytes;
+
+                    int numberOfRecords = cmd.ExecuteNonQuery();
+
+                    if (numberOfRecords == 1)
+                    {
+                        return "Status: 1 Code: Photo was add successfuly";
+                    }
+                    else
+                        return "Status: 0 Code: Photo wasn't add to database" + Image.ImageBytes + " nick: " + Image.userName;
+                }
             }
-            return Request.CreateResponse(HttpStatusCode.OK);
+
+            return "Status: -1 Code: Photo was null";
         }
+
     }
 }
