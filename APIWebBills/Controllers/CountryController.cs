@@ -2,6 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Web.Configuration;
 using System.Web.Http;
 
@@ -17,29 +20,51 @@ namespace APIWebBills.Controllers
 
         // POST api/<controller>
         [HttpPost]
-        public string Post()
+        public HttpResponseMessage Post()
         {
-            country objectCountry = new country();
-  
-            using (SqlConnection con = new SqlConnection(WebConfigurationManager.ConnectionStrings["Connection"].ConnectionString))
+            HttpResponseMessage resultw = new HttpResponseMessage();
+            try
             {
-                con.Open();
-                using (SqlCommand command = new SqlCommand("SELECT countryName FROM countries", con))
+                country objectCountry = new country();
+
+                using (SqlConnection con = new SqlConnection(WebConfigurationManager.ConnectionStrings["Connection"].ConnectionString))
                 {
-                    using (SqlDataReader reader = command.ExecuteReader())
+                    con.Open();
+                    using (SqlCommand command = new SqlCommand("SELECT countryName FROM countries", con))
                     {
-                        while (reader.Read())
+                        using (SqlDataReader reader = command.ExecuteReader())
                         {
-                            for (int i = 0; i < reader.FieldCount; i++)
+                            while (reader.Read())
                             {
-                                 objectCountry.listCountry.Add(Convert.ToString(reader.GetValue(i)));
+                                for (int i = 0; i < reader.FieldCount; i++)
+                                {
+                                    objectCountry.listCountry.Add(Convert.ToString(reader.GetValue(i)));
+                                }
                             }
                         }
                     }
                 }
+                string jsonCountries = JsonConvert.SerializeObject(objectCountry);
+
+                if (objectCountry.listCountry.Any())
+                {
+                    resultw.StatusCode = HttpStatusCode.OK;
+                    resultw.Content = new StringContent(jsonCountries);
+                    return resultw;
+                }
+                else
+                {
+                    resultw.StatusCode = HttpStatusCode.NotFound;
+                    resultw.Content = new StringContent("");
+                    return resultw;
+                }
             }
-            string jsonCountries = JsonConvert.SerializeObject(objectCountry);
-            return jsonCountries;
+            catch (Exception ex)
+            {
+                resultw.StatusCode = HttpStatusCode.InternalServerError;
+                resultw.Content = new StringContent(ex.ToString());
+                return resultw;
+            }
         }
 
         public class country

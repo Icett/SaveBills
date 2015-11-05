@@ -62,6 +62,13 @@ namespace APIWebBills.Controllers
 
         }
 
+        [HttpDelete]
+        public HttpResponseMessage DeleteImage(int id)
+        {
+            HttpResponseMessage resultw = new HttpResponseMessage(HttpStatusCode.OK);
+
+            return resultw;
+        }
 
 
         // POST api/images

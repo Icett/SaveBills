@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
+using System.Net;
+using System.Net.Http;
 using System.Security.Cryptography.X509Certificates;
 using System.Web;
 using System.Web.Configuration;
@@ -23,8 +25,9 @@ namespace APIWebBills.Controllers
 
         // POST api/register
         [HttpPost]
-        public string Post([FromBody]LoginClass user)
+        public HttpResponseMessage Post([FromBody]LoginClass user)
         {
+            HttpResponseMessage resultw = new HttpResponseMessage();
             using (SqlConnection con = new SqlConnection(WebConfigurationManager.ConnectionStrings["Connection"].ConnectionString))
             {
                 con.Open();
@@ -34,7 +37,9 @@ namespace APIWebBills.Controllers
                     {
                         if (reader.HasRows)
                         {
-                            return "Status: 0 Code: User exist";
+                            resultw.StatusCode = HttpStatusCode.Found;
+                            resultw.Content = new StringContent("User exist");
+                            return resultw;
                         }
                     }
                 }
@@ -66,10 +71,16 @@ namespace APIWebBills.Controllers
 
                 if (numberOfRecords == 1)
                 {
-                    return "Status: 1 Code: User was add successfuly";
+                    resultw.StatusCode = HttpStatusCode.OK;
+                    resultw.Content = new StringContent("User was add successfuly");
+                    return resultw;
                 }
                 else
-                    return "Status: -1 Code: User wasn't add to database";
+                {
+                    resultw.StatusCode = HttpStatusCode.ExpectationFailed;
+                    resultw.Content = new StringContent("User wasn't add to database");
+                    return resultw;
+                }
 
             }
         }

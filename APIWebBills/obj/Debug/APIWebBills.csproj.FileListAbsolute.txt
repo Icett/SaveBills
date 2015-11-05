@@ -173,3 +173,5 @@ C:\Users\karol\Documents\GitHubVisualStudio\SaveBills\APIWebBills\bin\System.Net
 C:\Users\karol\Documents\GitHubVisualStudio\SaveBills\APIWebBills\bin\System.Net.Http.Primitives.xml
 C:\Users\karol\Documents\GitHubVisualStudio\SaveBills\APIWebBills\bin\Zlib.Portable.xml
 C:\Users\karol\Documents\GitHubVisualStudio\SaveBills\APIWebBills\obj\Debug\APIWebBills.csproj.App.config
+C:\Users\karol\Documents\GitHubVisualStudio\SaveBills\APIWebBills\bin\EntityFramework.SqlServer.dll
+C:\Users\karol\Documents\GitHubVisualStudio\SaveBills\APIWebBills\bin\EntityFramework.SqlServer.xml

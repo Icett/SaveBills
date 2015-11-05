@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.IO;
+using System.Net;
+using System.Net.Http;
 using System.Security.Cryptography.X509Certificates;
 using System.Web;
 using System.Web.Configuration;
@@ -24,10 +26,11 @@ namespace APIWebBills.Controllers
         }
 
         [HttpPost]
-        public string Post([FromBody]LoginClass user)
+        public HttpResponseMessage Post([FromBody]LoginClass user)
         {
             //return "response " + user.userName + ", " + user.userPsswd;
             // Pobranie uzytkownika
+
             string activeUser = "";
             using (SqlConnection con = new SqlConnection(WebConfigurationManager.ConnectionStrings["Connection"].ConnectionString))
             {
@@ -46,20 +49,27 @@ namespace APIWebBills.Controllers
                     }
                 }
             }
+            HttpResponseMessage resultw = new HttpResponseMessage();
+
+            
             if (activeUser == "1") // user is existing
             {
-                return "Status: 1 Code: user exist";
+                resultw.StatusCode = HttpStatusCode.OK;
+                resultw.Content = new StringContent("Użytkownik istnieje");
+                return resultw;
             }
             else if (activeUser == "0") // account is inactive
             {
-                return "Status: 0 Code: user account was deleted";
+                resultw.StatusCode = HttpStatusCode.NotAcceptable;
+                resultw.Content = new StringContent("Użytkownik jest nieaktywny");
+                return resultw;
             }
             else // user is not existing
             {
-                return "Status: -1 Code: user is not existing";
+                resultw.StatusCode = HttpStatusCode.NotFound;
+                resultw.Content = new StringContent("Nie znaleziono użytkownika");
+                return resultw;
             }
-
-            //var json = JsonConvert.SerializeObject(test);
         }
 
         //// PUT api/logins/5
