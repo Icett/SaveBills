@@ -1,11 +1,17 @@
 ﻿using Google.Apis.Auth.OAuth2;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Security.Cryptography.X509Certificates;
 using System.Web;
+using System.Web.Configuration;
 using System.Web.Http;
+using APIWebBills.Models;
 
 namespace APIWebBills.Controllers
 {
@@ -25,8 +31,41 @@ namespace APIWebBills.Controllers
 
         // POST api/photo
         [HttpPost]
-        public void Post([FromBody]string value)
+        public HttpResponseMessage Post([FromBody]PhotoClass user)
         {
+            HttpResponseMessage resp = new HttpResponseMessage();
+
+            byte[] binaryString;
+            using (SqlConnection con = new SqlConnection(WebConfigurationManager.ConnectionStrings["Connection"].ConnectionString))
+            {
+                con.Open();
+                using (SqlCommand command = new SqlCommand("SELECT ImageBytes FROM Photo WHERE Nick = '" + user.userName + "' AND name = '" + user.photoName+"'", con))
+                {
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                binaryString = (byte[])reader[0];
+
+                                HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
+                                result.Content = new ByteArrayContent(binaryString);
+                                result.Content.Headers.ContentType =
+                                    new MediaTypeHeaderValue("application/octet-stream");
+
+                                return result;
+                            }
+                        }
+
+                    }
+                }
+            }
+
+
+
+
+            return resp;
         }
 
         // PUT api/photo/5
