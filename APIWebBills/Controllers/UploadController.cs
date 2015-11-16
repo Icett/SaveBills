@@ -73,8 +73,11 @@ namespace APIWebBills.Controllers
 
         // POST api/images
         [HttpPost]
-        public string PostImage([FromBody]PhotoClass Image)
+        public HttpResponseMessage PostImage([FromBody]PhotoClass Image)
         {
+            HttpResponseMessage resultw = new HttpResponseMessage();
+
+            
             if (Image != null)
             {
                 using (SqlConnection con = new SqlConnection(WebConfigurationManager.ConnectionStrings["Connection"].ConnectionString))
@@ -92,17 +95,42 @@ namespace APIWebBills.Controllers
                     cmd.Parameters["@ImageBytes"].Value = Image.ImageBytes;
 
                     int numberOfRecords = cmd.ExecuteNonQuery();
-
-                    if (numberOfRecords == 1)
+                    
+                    if (numberOfRecords == 1) // wyciągnąć na jakim ID zostało dodane.
                     {
-                        return "Status: 1 Code: Photo was add successfuly";
+                        string id = "";
+                        using (SqlCommand command = new SqlCommand("SELECT TOP 1 id FROM Photo Where Nick = '" + Image.userName+ "' ORDER BY id DESC", con))
+                        {
+                            using (SqlDataReader reader = command.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    for (int i = 0; i < reader.FieldCount; i++)
+                                    {
+                                        id = Convert.ToString(reader[0]);
+                                    }
+                                }
+
+                            }
+                        }
+
+
+                        resultw.Content = new StringContent(id);
+                        resultw.StatusCode = HttpStatusCode.OK;
+                        return resultw;
                     }
                     else
-                        return "Status: 0 Code: Photo wasn't add to database" + Image.ImageBytes + " nick: " + Image.userName;
+                    {
+                        resultw.StatusCode = HttpStatusCode.InternalServerError;
+                        resultw.Content =
+                            new StringContent("Photo wasn't add to database" + Image.ImageBytes +
+                                              " nick: " + Image.userName);
+                        return resultw;
+                    }
                 }
             }
-
-            return "Status: -1 Code: Photo was null";
+            resultw.StatusCode = HttpStatusCode.NotFound;
+            return resultw;
         }
 
     }

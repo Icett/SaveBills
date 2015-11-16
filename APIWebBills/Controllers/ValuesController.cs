@@ -20,7 +20,7 @@ namespace APIWebBills.Controllers
 
         // POST api/values
         [HttpPost]
-        public string Post([FromBody]test values)
+        public string Post([FromBody]string values)
         {
             string response = "OK: " + values;
             return response;

@@ -16,5 +16,6 @@ namespace APIWebBills.Models
         public string userName { get; set; }
         public byte[] ImageBytes { get; set; }
         public DateTime AddedDate { get; set; }
+        public int price { get; set; }
     }
 }
