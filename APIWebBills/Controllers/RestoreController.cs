@@ -6,6 +6,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Net.Mail;
 using System.Web.Configuration;
 using System.Web.Http;
@@ -22,8 +23,9 @@ namespace APIWebBills.Controllers
 
         // POST api/<controller>
         [HttpPost]
-        public string Post([FromBody]LoginClass user)
+        public HttpResponseMessage Post([FromBody]LoginClass user)
         {
+            HttpResponseMessage resp = new HttpResponseMessage();
             using (SqlConnection con = new SqlConnection(WebConfigurationManager.ConnectionStrings["Connection"].ConnectionString))
             {
                 con.Open();
@@ -41,7 +43,9 @@ namespace APIWebBills.Controllers
                     {
                         if (!reader.HasRows)
                         {
-                            return "Status: -1 Code: User doesn't exist"; 
+                            resp.StatusCode = HttpStatusCode.NotFound;
+                            resp.Content = new StringContent("Status: -1 Code: User doesn't exist");
+                            return resp;
                         }
                     }
                 }
@@ -79,22 +83,43 @@ namespace APIWebBills.Controllers
                 }
 
                 int numberOfRecords = cmd.ExecuteNonQuery();
-                
+
+                if (user.UserName != "")
+                {
+                    using (SqlConnection cona = new SqlConnection(WebConfigurationManager.ConnectionStrings["Connection"].ConnectionString))
+                    {
+                        cona.Open();
+                        using (SqlCommand command = new SqlCommand("SELECT mail FROM ACCOUNT WHERE nick = '" + user.UserName + "'", cona))
+                        {
+                            using (SqlDataReader reader = command.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    for (int i = 0; i < reader.FieldCount; i++)
+                                    {
+                                        user.UserMail = reader[0].ToString();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
                 if (numberOfRecords == 1 && user.UserMail.Length > 3)
                 {
-                    MailMessage o = new MailMessage("karolpyrek1@tlen.pl", user.UserMail, "Keep Guarantee: Reset your password", "Thanks for using my app! Here is your new password: " + result);
-                    NetworkCredential netCred = new NetworkCredential("karolpyrek1@tlen.pl", "qazxc284");
+                    MailMessage o = new MailMessage("inzy.proj@tlen.pl", user.UserMail, "Keep Guarantee: Reset your password", "Thanks for using my app! Here is your new password: " + result);
+                    NetworkCredential netCred = new NetworkCredential("inzy.proj@tlen.pl", "inz123");
                     SmtpClient smtpobj = new SmtpClient("poczta.o2.pl", 587);
                     smtpobj.EnableSsl = true;
                     smtpobj.Credentials = netCred;
                     smtpobj.Send(o);
 
-                    
-                    return "Status: 1 Code: password was sent to an e-mail (if exist)";
-                }
-                    
+                    resp.StatusCode = HttpStatusCode.OK;
+                }  
                 else
-                    return "Status: 0 Code: Couldn't change the password";
+                    resp.StatusCode = HttpStatusCode.NotFound;
+
+                return resp;
             }
         }
     }
