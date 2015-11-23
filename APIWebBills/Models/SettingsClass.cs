@@ -8,9 +8,9 @@ namespace APIWebBills.Models
 {
     class SettingsClass
     {
-        public int userID { get; set; }
-        public bool storeOnPhone { get; set; }
-        public string theme { get; set; }
-        public string language { get; set; }
+        public int UserId { get; set; }
+        public bool StoreOnPhone { get; set; }
+        public string Theme { get; set; }
+        public string Language { get; set; }
     }
 }

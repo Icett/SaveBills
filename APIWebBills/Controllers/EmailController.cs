@@ -46,7 +46,7 @@ namespace APIWebBills.Controllers
                 using (SqlConnection con = new SqlConnection(WebConfigurationManager.ConnectionStrings["Connection"].ConnectionString))
                 {
                     con.Open();
-                    using (SqlCommand command = new SqlCommand("SELECT ImageBytes FROM Photo WHERE Nick = '" + user.userName + "' AND name = '" + user.photoName + "'", con))
+                    using (SqlCommand command = new SqlCommand("SELECT ImageBytes FROM Photo WHERE Nick = '" + user.UserName + "' AND name = '" + user.PhotoName + "'", con))
                     {
                         using (SqlDataReader reader = command.ExecuteReader())
                         {

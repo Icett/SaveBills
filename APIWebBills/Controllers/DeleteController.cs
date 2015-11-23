@@ -32,7 +32,7 @@ namespace APIWebBills.Controllers
                 SqlCommand cmd = new SqlCommand(sqlInsert, con);
                 cmd.Parameters.Add("@nick", SqlDbType.VarChar);
                 cmd.Parameters.Add("@active", SqlDbType.VarChar);
-                cmd.Parameters["@nick"].Value = user.userName;
+                cmd.Parameters["@nick"].Value = user.UserName;
                 cmd.Parameters["@active"].Value = '0';
 
                 int numberOfRecords = cmd.ExecuteNonQuery();

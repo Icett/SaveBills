@@ -7,13 +7,13 @@ namespace APIWebBills.Models
 {
     public class LoginClass
     {
-        public int userID { get; set; }
-        public string userName { get; set; }
+        public int UserId { get; set; }
+        public string UserName { get; set; }
         [Required(ErrorMessage = "This field is required !")]
-        public string userPsswd { get; set; }
-        public string userMail { get; set; }
-        public string userCountry { get; set; }
-        public bool premium { get; set; }
+        public string UserPsswd { get; set; }
+        public string UserMail { get; set; }
+        public string UserCountry { get; set; }
+        public bool Premium { get; set; }
         
         #region SZYFROWANIE
         private string Crypt_The_Password(string psswd, string apiSalt)

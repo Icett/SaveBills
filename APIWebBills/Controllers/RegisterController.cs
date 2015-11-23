@@ -31,7 +31,7 @@ namespace APIWebBills.Controllers
             using (SqlConnection con = new SqlConnection(WebConfigurationManager.ConnectionStrings["Connection"].ConnectionString))
             {
                 con.Open();
-                using (SqlCommand command = new SqlCommand("SELECT nick FROM ACCOUNT WHERE nick = '" + user.userName + "'", con))
+                using (SqlCommand command = new SqlCommand("SELECT nick FROM ACCOUNT WHERE nick = '" + user.UserName + "'", con))
                 {
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
@@ -44,25 +44,25 @@ namespace APIWebBills.Controllers
                     }
                 }
 
-                string sqlInsert = "INSERT INTO Account (nick, password, mail, country, active, premium)" +
+                string sqlInsert = "INSERT INTO Account (nick, password, mail, country, active, Premium)" +
                                                         "values (@nick, @psswd, @mail, @country, '1', '0')";
                 SqlCommand cmd = new SqlCommand(sqlInsert, con);
                 cmd.Parameters.Add("@nick", SqlDbType.VarChar);
                 cmd.Parameters.Add("@psswd", SqlDbType.VarChar);
                 cmd.Parameters.Add("@mail", SqlDbType.VarChar);
                 cmd.Parameters.Add("@country", SqlDbType.VarChar);
-                cmd.Parameters["@nick"].Value = user.userName;
-                cmd.Parameters["@psswd"].Value = user.userPsswd;
+                cmd.Parameters["@nick"].Value = user.UserName;
+                cmd.Parameters["@psswd"].Value = user.UserPsswd;
 
 
-                if (user.userMail != "")
-                    cmd.Parameters["@mail"].Value = user.userMail;
+                if (user.UserMail != "")
+                    cmd.Parameters["@mail"].Value = user.UserMail;
                 else
                     cmd.Parameters["@mail"].Value = "EMPTY";
 
 
-                if (user.userCountry != null)
-                    cmd.Parameters["@country"].Value = user.userCountry;
+                if (user.UserCountry != null)
+                    cmd.Parameters["@country"].Value = user.UserCountry;
                 else
                     cmd.Parameters["@country"].Value = "EMPTY";
 

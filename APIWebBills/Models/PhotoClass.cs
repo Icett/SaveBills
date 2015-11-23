@@ -8,14 +8,14 @@ namespace APIWebBills.Models
 {
     public class PhotoClass
     {
-        public int photoID { get; set; }
-        public string photoName { get; set; }
-        public string photoDate { get; set; }
-        public DateTime guarantee { get; set; }
-        public string photoInfo { get; set; }
-        public string userName { get; set; }
+        public int PhotoId { get; set; }
+        public string PhotoName { get; set; }
+        public string PhotoDate { get; set; }
+        public DateTime Guarantee { get; set; }
+        public string PhotoInfo { get; set; }
+        public string UserName { get; set; }
         public byte[] ImageBytes { get; set; }
         public DateTime AddedDate { get; set; }
-        public int price { get; set; }
+        public int Price { get; set; }
     }
 }

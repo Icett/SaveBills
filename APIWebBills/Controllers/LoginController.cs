@@ -28,14 +28,14 @@ namespace APIWebBills.Controllers
         [HttpPost]
         public HttpResponseMessage Post([FromBody]LoginClass user)
         {
-            //return "response " + user.userName + ", " + user.userPsswd;
+            //return "response " + user.UserName + ", " + user.UserPsswd;
             // Pobranie uzytkownika
 
             string activeUser = "";
             using (SqlConnection con = new SqlConnection(WebConfigurationManager.ConnectionStrings["Connection"].ConnectionString))
             {
                 con.Open();
-                using (SqlCommand command = new SqlCommand("SELECT active FROM ACCOUNT WHERE nick = '" + user.userName + "' AND password = '" + user.userPsswd + "'" + " AND active = 1", con))
+                using (SqlCommand command = new SqlCommand("SELECT active FROM ACCOUNT WHERE nick = '" + user.UserName + "' AND password = '" + user.UserPsswd + "'" + " AND active = 1", con))
                 {
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
@@ -49,13 +49,31 @@ namespace APIWebBills.Controllers
                     }
                 }
             }
+            string prem = "";
+            using (SqlConnection con = new SqlConnection(WebConfigurationManager.ConnectionStrings["Connection"].ConnectionString))
+            {
+                con.Open();
+                using (SqlCommand command = new SqlCommand("SELECT premium FROM ACCOUNT WHERE nick = '" + user.UserName + "' AND password = '" + user.UserPsswd + "'" + " AND active = 1", con))
+                {
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                prem += reader.GetValue(i);
+                            }
+                        }
+                    }
+                }
+            }
             HttpResponseMessage resultw = new HttpResponseMessage();
 
-            
+           
             if (activeUser == "1") // user is existing
             {
                 resultw.StatusCode = HttpStatusCode.OK;
-                resultw.Content = new StringContent("Użytkownik istnieje");
+                resultw.Content = new StringContent("Użytkownik istnieje " + prem);
                 return resultw;
             }
             else if (activeUser == "0") // account is inactive

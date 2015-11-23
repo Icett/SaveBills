@@ -91,7 +91,7 @@ namespace APIWebBills.Controllers
                     SqlCommand cmd = new SqlCommand(sqlInsert, con);
                     cmd.Parameters.Add("@Nick", SqlDbType.VarChar);
                     cmd.Parameters.Add("@ImageBytes", SqlDbType.VarBinary);
-                    cmd.Parameters["@Nick"].Value = Image.userName;
+                    cmd.Parameters["@Nick"].Value = Image.UserName;
                     cmd.Parameters["@ImageBytes"].Value = Image.ImageBytes;
 
                     int numberOfRecords = cmd.ExecuteNonQuery();
@@ -99,7 +99,7 @@ namespace APIWebBills.Controllers
                     if (numberOfRecords == 1) // wyciągnąć na jakim ID zostało dodane.
                     {
                         string id = "";
-                        using (SqlCommand command = new SqlCommand("SELECT TOP 1 id FROM Photo Where Nick = '" + Image.userName+ "' ORDER BY id DESC", con))
+                        using (SqlCommand command = new SqlCommand("SELECT TOP 1 id FROM Photo Where Nick = '" + Image.UserName+ "' ORDER BY id DESC", con))
                         {
                             using (SqlDataReader reader = command.ExecuteReader())
                             {
@@ -124,7 +124,7 @@ namespace APIWebBills.Controllers
                         resultw.StatusCode = HttpStatusCode.InternalServerError;
                         resultw.Content =
                             new StringContent("Photo wasn't add to database" + Image.ImageBytes +
-                                              " nick: " + Image.userName);
+                                              " nick: " + Image.UserName);
                         return resultw;
                     }
                 }

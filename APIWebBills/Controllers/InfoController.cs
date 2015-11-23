@@ -33,7 +33,7 @@ namespace APIWebBills.Controllers
             using (SqlConnection con = new SqlConnection(WebConfigurationManager.ConnectionStrings["Connection"].ConnectionString))
             {
                 con.Open();
-                using (SqlCommand command = new SqlCommand("SELECT name,date,guarantee,info, id, price FROM Photo WHERE Nick = '" + user.userName + "' AND name = '" + user.photoName + "'", con))
+                using (SqlCommand command = new SqlCommand("SELECT name,date,Guarantee,info, id, Price FROM Photo WHERE Nick = '" + user.UserName + "' AND name = '" + user.PhotoName + "'", con))
                 {
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
@@ -73,22 +73,22 @@ namespace APIWebBills.Controllers
                 con.Open();
                 string sqlInsert = "";
 
-                sqlInsert = "UPDATE Photo SET info = @info, date = @date, guarantee = @guarantee, price = @price, name = @name WHERE id = @id";
+                sqlInsert = "UPDATE Photo SET info = @info, date = @date, Guarantee = @Guarantee, Price = @Price, name = @name WHERE id = @id";
 
                 
                 SqlCommand cmd = new SqlCommand(sqlInsert, con);
                 cmd.Parameters.Add("@info", SqlDbType.VarChar);
-                cmd.Parameters["@info"].Value = user.photoInfo;
+                cmd.Parameters["@info"].Value = user.PhotoInfo;
                 cmd.Parameters.Add("@date", SqlDbType.Date);
                 cmd.Parameters["@date"].Value = user.AddedDate;
-                cmd.Parameters.Add("@guarantee", SqlDbType.Date);
-                cmd.Parameters["@guarantee"].Value = user.guarantee;
+                cmd.Parameters.Add("@Guarantee", SqlDbType.Date);
+                cmd.Parameters["@Guarantee"].Value = user.Guarantee;
                 cmd.Parameters.Add("@name", SqlDbType.VarChar);
-                cmd.Parameters["@name"].Value = user.photoName;
+                cmd.Parameters["@name"].Value = user.PhotoName;
                 cmd.Parameters.Add("@id", SqlDbType.Int);
-                cmd.Parameters["@id"].Value = user.photoID;
-                cmd.Parameters.Add("@price", SqlDbType.Int);
-                cmd.Parameters["@price"].Value = user.price;
+                cmd.Parameters["@id"].Value = user.PhotoId;
+                cmd.Parameters.Add("@Price", SqlDbType.Int);
+                cmd.Parameters["@Price"].Value = user.Price;
 
 
                 int numberOfRecords = cmd.ExecuteNonQuery();

@@ -27,13 +27,13 @@ namespace APIWebBills.Controllers
             using (SqlConnection con = new SqlConnection(WebConfigurationManager.ConnectionStrings["Connection"].ConnectionString))
             {
                 con.Open();
-                string sqlCommand = "SELECT active FROM ACCOUNT WHERE nick = '" + user.userName + "' OR mail = '" + user.userMail + "'";
+                string sqlCommand = "SELECT active FROM ACCOUNT WHERE nick = '" + user.UserName + "' OR mail = '" + user.UserMail + "'";
 
-                if (user.userMail != "")
-                    sqlCommand = "SELECT active FROM ACCOUNT WHERE mail = '" + user.userMail + "'";
+                if (user.UserMail != "")
+                    sqlCommand = "SELECT active FROM ACCOUNT WHERE mail = '" + user.UserMail + "'";
 
-                if (user.userName != "")
-                    sqlCommand = "SELECT active FROM ACCOUNT WHERE nick = '" + user.userName + "'";
+                if (user.UserName != "")
+                    sqlCommand = "SELECT active FROM ACCOUNT WHERE nick = '" + user.UserName + "'";
 
                 using (SqlCommand command = new SqlCommand(sqlCommand, con))
                 {
@@ -55,10 +55,10 @@ namespace APIWebBills.Controllers
 
                 string sqlInsert = "";
 
-                if (user.userMail != "")
+                if (user.UserMail != "")
                     sqlInsert = "UPDATE Account SET password = @psswd WHERE mail = @mail";
 
-                if (user.userName != "")
+                if (user.UserName != "")
                     sqlInsert = "UPDATE Account SET password = @psswd WHERE nick = @nick";
 
                 
@@ -66,23 +66,23 @@ namespace APIWebBills.Controllers
                 cmd.Parameters.Add("@psswd", SqlDbType.VarChar);
                 
                 cmd.Parameters["@psswd"].Value = result;
-                if (user.userMail != "")
+                if (user.UserMail != "")
                 {
                     cmd.Parameters.Add("@mail", SqlDbType.VarChar);
-                    cmd.Parameters["@mail"].Value = user.userMail;
+                    cmd.Parameters["@mail"].Value = user.UserMail;
                 }
                 
-                if (user.userName != "")
+                if (user.UserName != "")
                 {
                     cmd.Parameters.Add("@nick", SqlDbType.VarChar);
-                    cmd.Parameters["@nick"].Value = user.userName;
+                    cmd.Parameters["@nick"].Value = user.UserName;
                 }
 
                 int numberOfRecords = cmd.ExecuteNonQuery();
                 
-                if (numberOfRecords == 1 && user.userMail.Length > 3)
+                if (numberOfRecords == 1 && user.UserMail.Length > 3)
                 {
-                    MailMessage o = new MailMessage("karolpyrek1@tlen.pl", user.userMail, "Keep guarantee: Reset your password", "Thanks for using my app! Here is your new password: " + result);
+                    MailMessage o = new MailMessage("karolpyrek1@tlen.pl", user.UserMail, "Keep Guarantee: Reset your password", "Thanks for using my app! Here is your new password: " + result);
                     NetworkCredential netCred = new NetworkCredential("karolpyrek1@tlen.pl", "qazxc284");
                     SmtpClient smtpobj = new SmtpClient("poczta.o2.pl", 587);
                     smtpobj.EnableSsl = true;

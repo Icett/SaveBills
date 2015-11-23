@@ -39,7 +39,7 @@ namespace APIWebBills.Controllers
                 using (SqlConnection con = new SqlConnection(WebConfigurationManager.ConnectionStrings["Connection"].ConnectionString))
                 {
                     con.Open();
-                    using (SqlCommand command = new SqlCommand("SELECT name FROM Photo WHERE Nick = '"+ user.userName+"'", con))
+                    using (SqlCommand command = new SqlCommand("SELECT name FROM Photo WHERE Nick = '"+ user.UserName+"'", con))
                     {
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
