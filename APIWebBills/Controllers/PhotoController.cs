@@ -1,6 +1,7 @@
 ﻿using Google.Apis.Auth.OAuth2;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
@@ -74,8 +75,27 @@ namespace APIWebBills.Controllers
         }
 
         // DELETE api/photo/5
-        public void Delete(int id)
+        [HttpDelete]
+        public HttpResponseMessage Delete(string id)
         {
+            HttpResponseMessage resp = new HttpResponseMessage();
+            using (SqlConnection con = new SqlConnection(WebConfigurationManager.ConnectionStrings["Connection"].ConnectionString))
+            {
+                con.Open();
+                string sqlInsert = "DELETE FROM Photo WHERE id = @id";
+
+
+                SqlCommand cmd = new SqlCommand(sqlInsert, con);
+                cmd.Parameters.Add("@id", SqlDbType.Int);
+                cmd.Parameters["@id"].Value = Int32.Parse(id);
+
+                int numberOfRecords = cmd.ExecuteNonQuery();
+
+                if (numberOfRecords == 1)
+                    return resp;
+                else
+                    return resp;
+            }
         }
 
 
